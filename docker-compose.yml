@@ -1,28 +1,9 @@
-version: '3'
+version: '3.7'
 services:
-  db:
-    hostname: db
-    image: mariadb:10
-    env_file: ${PWD-.}/config/db.env
-    volumes:
-      - ./database:/var/lib/mysql
-      - ${PWD-.}/mysql-db:/docker-entrypoint-initdb.d
-    restart: unless-stopped
-  redis:
-    hostname: redis:5
-    image: redis:latest
-    command: ["redis-server", "--appendonly", "no"]
-    volumes:
-      - ${PWD-.}/redis:/data
-    restart: always
-    expose:
-      - "6379"
   nwserver:
     hostname: nwserver
-    image: nwnxee/unified:build8186-lts
-    env_file: ${PWD-.}/config/nwserver.env
-    links:
-      - "redis:redis"
+    image: nwnxee/unified:build8193.6
+    env_file: ${PWD-.}/config/tierras-sombrias.env
     stdin_open: true
     tty: true
     volumes:
@@ -31,25 +12,3 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:5121:5121/udp"
-  influxdb:
-    hostname: influxdb
-    image: influxdb:1.7
-    restart: unless-stopped
-    env_file: ${PWD-.}/config/influxdb.env
-    volumes:
-    - influxdb:/var/lib/influxdb
-  grafana:
-    hostname: grafana
-    image: grafana/grafana:6.0.1
-    restart: unless-stopped
-    ports:
-    - '127.0.0.1:3000:3000'
-    depends_on:
-    - influxdb
-    env_file: ${PWD-.}/config/grafana.env
-    volumes:
-    - ./grafana-provisioning:/etc/grafana/provisioning
-    - grafana:/var/lib/grafana
-volumes:
-  influxdb:
-  grafana:
