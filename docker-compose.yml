@@ -2,7 +2,7 @@ version: '3.7'
 services:
   nwserver:
     hostname: nwserver
-    image: nwnxee/unified:build8193.6
+    image: nwnxee/unified:3528b0e
     env_file: ${PWD-.}/config/tierras-sombrias.env
     stdin_open: true
     tty: true
@@ -12,3 +12,14 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:5121:5121/udp"
+  influxdb:
+    hostname: influxdb
+    image: influxdb:latest
+    restart: unless-stopped
+    env_file: ${PWD-.}/config/influxdb.env
+    volumes:
+      - influxdb:/var/lib/influxdb
+    ports:
+      - "127.0.0.1:8086:8086"
+volumes:
+  influxdb:
